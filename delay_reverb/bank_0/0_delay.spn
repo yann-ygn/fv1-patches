@@ -1,0 +1,45 @@
+;delay_01.spn
+
+EQU	length		32767
+EQU	smooth		0.000125
+
+MEM	echo		length
+
+EQU	pot0_smooth	REG0
+EQU	dout		REG1
+EQU	fdbk		REG2
+EQU	dry_in		REG3
+
+;POT0 setup
+RDAX	POT0, 1
+RDFX	pot0_smooth, smooth
+WRAX	pot0_smooth, 0
+
+;POT0 delay scaling
+RDAX 	pot0_smooth, 1
+SOF	0.9, 0.1
+WRAX 	ADDR_PTR, 0
+
+;Mix input and feedback
+RDAX ADCL, 1
+WRAX dry_in, 0
+RDAX fdbk, 1
+MULX POT1
+RDAX dry_in, 1
+WRAX dry_in, 0
+
+;Delay
+RDAX 	dry_in, 1
+WRA	echo, 0
+RMPA	1
+WRAX	dout, 0
+
+;Feedback
+RDAX dout, 1
+WRAX fdbk, 0
+
+;Output
+RDAX dout, 0.4
+;RDAX ADCR, 1
+WRAX DACL, 1
+WRAX DACR, 0

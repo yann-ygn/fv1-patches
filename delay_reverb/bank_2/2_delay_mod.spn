@@ -1,0 +1,87 @@
+;delay_mod01.spn
+;POT0 : Delay time / Chorus LFO rate
+;POT1 : Chorus LFO witdh
+;POT2 : Feedback
+
+EQU	smooth		0.000125
+EQU	lpf		0.344		;2200Hz
+EQU	hpf		0.035		;200Hz
+
+
+MEM	chorus		1302
+MEM	echo		31446
+
+EQU	pot0_smooth	REG0
+EQU	pot0_lfo		REG1
+EQU	dry_in		REG2
+EQU	dout		REG3
+EQU	chrout		REG4
+EQU	lpffilter		REG5
+EQU	lpfout		REG6
+EQU	hpffilter		REG7
+EQU	hpfout		REG8
+EQU	fdbk		REG9
+
+;POT0 smoothing
+RDAX	POT0, 1
+RDFX	pot0_smooth, smooth
+WRAX	pot0_smooth, 0
+
+;POT0 delay scaling
+RDAX 	pot0_smooth, 1
+SOF	0.5, 0.5
+WRAX 	ADDR_PTR, 0
+
+;POT0 chrorus LFO scaling
+RDAX 	pot0_smooth, 1
+SOF	-0.5, 0.999
+WRAX 	pot0_lfo, 0
+
+;Mix input and feedback
+RDAX ADCL, 1
+WRAX dry_in, 0
+RDAX fdbk, 1
+MULX POT1
+RDAX dry_in, 1
+WRAX dry_in, 0
+
+;Chorus
+SKP	RUN, START
+WLDS	SIN0, 162, 0
+START:
+RDAX	POT2, 0.00517
+WRAX	SIN0_RANGE, 0
+RDAX	pot0_lfo, 0.23645
+WRAX	SIN0_RATE, 0
+LDAX	dry_in
+WRA 	chorus, 0
+CHO 	RDA,SIN0,SIN|REG|COMPC, chorus^
+CHO 	RDA,SIN0,SIN, chorus^+1
+WRAX	chrout, 0
+
+;Delay
+RDAX 	chrout, 1
+WRA	echo, 0
+RMPA	1
+WRAX	dout, 0
+
+;LPF
+RDAX	dout, 1
+RDFX	lpfout, lpf
+WRAX	lpfout, 0
+
+;HPF
+RDAX	lpfout, 1
+RDFX	hpffilter, hpf
+WRHX	hpffilter, -1
+WRAX	hpfout, 0
+
+;Feedback
+RDAX hpfout,1
+WRAX fdbk, 0
+
+;Output
+RDAX hpfout, 0.5
+;RDAX ADCR, 1
+WRAX DACL, 1
+WRAX DACR, 0
