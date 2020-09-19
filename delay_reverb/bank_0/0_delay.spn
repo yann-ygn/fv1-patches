@@ -1,45 +1,24 @@
 ;delay_01.spn
+;POT0 = delay time
+;POT1 = feedback
+;POT2 = 
 
-EQU	length		32767
-EQU	smooth		0.000125
+EQU	    length		    32767
+EQU	    smooth		    0.000125
 
-MEM	echo		length
+MEM	    echo		    length
 
-EQU	pot0_smooth	REG0
-EQU	dout		REG1
-EQU	fdbk		REG2
-EQU	dry_in		REG3
+EQU     pot0Smooth	    REG0
+EQU     delayOut		REG1
+EQU     feedback		REG2
+EQU     dryInput		REG3
 
 ;POT0 setup
 RDAX	POT0, 1
-RDFX	pot0_smooth, smooth
-WRAX	pot0_smooth, 0
+RDFX	pot0Smooth, smooth
+WRAX	pot0Smooth, 0
 
 ;POT0 delay scaling
-RDAX 	pot0_smooth, 1
-SOF	0.9, 0.1
+RDAX 	pot0Smooth, 1
+SOF	    0.96, 0.04 ;40ms to 1000ms
 WRAX 	ADDR_PTR, 0
-
-;Mix input and feedback
-RDAX ADCL, 1
-WRAX dry_in, 0
-RDAX fdbk, 1
-MULX POT1
-RDAX dry_in, 1
-WRAX dry_in, 0
-
-;Delay
-RDAX 	dry_in, 1
-WRA	echo, 0
-RMPA	1
-WRAX	dout, 0
-
-;Feedback
-RDAX dout, 1
-WRAX fdbk, 0
-
-;Output
-RDAX dout, 0.4
-;RDAX ADCR, 1
-WRAX DACL, 1
-WRAX DACR, 0
