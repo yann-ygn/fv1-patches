@@ -4,6 +4,7 @@ export default [
     categories: ["Chorus"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Reverb", "Rate", "Level"],
     download: {
       spn: { file: "spinsemi/GA_DEMO_CHORUS.spn" },
     },
@@ -15,6 +16,7 @@ export default [
     categories: ["Delay"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Reverb level", "Delay", "Echo level"],
     download: {
       spn: { file: "spinsemi/GA_DEMO_ECHO_RPT.spn" },
     },
@@ -26,6 +28,7 @@ export default [
     categories: ["Delay"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Reverb level", "Delay", "Echo level"],
     download: {
       spn: { file: "spinsemi/GA_DEMO_ECHO.spn" },
     },
@@ -37,17 +40,19 @@ export default [
     categories: ["Flanger"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Reverb level", "Flange rate", "Effect level w/ feedback"],
     download: {
       spn: { file: "spinsemi/GA_DEMO_FLANGE.spn" },
     },
     application: "Guitar amplifier",
-    source_url: "http://spinsemi.com/guitar_amp_application.html"
+    source_url: "http://spinsemi.com/guitar_amp_application.html",
   },
   {
     name: "Phase shifter",
     categories: ["Phaser"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Reverb", "Rate", "Width"],
     download: {
       spn: { file: "spinsemi/GA_DEMO_PHASE.spn" },
     },
@@ -57,6 +62,7 @@ export default [
   {
     name: "Tremolo",
     categories: ["Tremolo"],
+    controls: ["Reverb", "Rate", "Level"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
     download: {
@@ -70,6 +76,7 @@ export default [
     categories: ["Vibrato"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Reverb", "Rate", "Width"],
     download: {
       spn: { file: "spinsemi/GA_DEMO_VIBRATO.spn" },
     },
@@ -81,6 +88,7 @@ export default [
     categories: ["Wah"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Reverb", "Sensitivity", "Filter Q / Level"],
     download: {
       spn: { file: "spinsemi/GA_DEMO_WAH.spn" },
     },
@@ -201,6 +209,7 @@ export default [
     name: "Reverb+HP+LP",
     description: "Reverb plus 2-pole high-pass and 2-pole low-pass",
     categories: ["Reverb","Filter"],
+    controls: ["Reverb", "High Pass Filter", "Low Pass Filter"],
     author: "Dave Spinkler",
     download: {
       spn: { file: "spinsemi/dance_ir_h_l.spn" },
@@ -213,22 +222,37 @@ export default [
     description: "Reverb plus flange plus 4-pole low pass",
     categories: ["Reverb","Filter","Flanger"],
     author: "Dave Spinkler",
+    controls: ["Reverb", "Flanger", "Low Pass Filter"],
     download: {
       spn: { file: "spinsemi/dance_ir_fla_l.spn" },
     },
     application: "Mixer",
-    source_url: "http://spinsemi.com/programs.php"
+    source_url: "http://spinsemi.com/programs.php",
+    commentary: [
+      {
+        written_by: "Dave Spinkler",
+        comments: { text: `;disco mixer program
+;pot0 = reverb to infinity
+;pot1 = flange; zero delay at full counter clockwise
+;pot2 = low pass filter (4 pole)`}
+      },
+      {
+        written_by: "Mark S.",
+        comments: { text: "If you take the time to dial in the LP filter, and adjust the wet/dry mix, you can get some amazing sounds that have a rare blend of being both unusual and very usable." }
+      },
+    ],
   },
   {
     name: "Reverb+Pitch+LP",
     description: "Reverb plus pitch plus 4-pole low-pass",
     categories: ["Reverb","Pitch","Filter"],
     author: "Dave Spinkler",
+    controls: ["Reverb", "Pitch", "Filter"],
     download: {
-      spn: { file: "spinsemi/dance_ir_fla_l.spn" },
+      spn: { file: "spinsemi/dance_ir_ptz_l.spn" },
     },
     application: "Mixer",
-    source_url: "http://spinsemi.com/programs.php"
+    source_url: "http://spinsemi.com/programs.php",
   },
 
   {
@@ -236,6 +260,7 @@ export default [
     categories: ["Reverb"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Pre-delay", "Reverb time", "Damping"],
     download: {
       spn: { file: "spinsemi/3K_V1_0_Hall.spn", },
     },
@@ -247,6 +272,7 @@ export default [
     categories: ["Reverb"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Pre-delay", "Reverb time", "Damping"],
     download: {
       spn: { file: "spinsemi/3K_V1_1_Room.spn" },
     },
@@ -257,6 +283,7 @@ export default [
     categories: ["Reverb"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Pre-delay", "Reverb time", "Damping"],
     download: {
       spn: { file: "spinsemi/3K_V1_2_PLATE.spn" },
     },
@@ -268,6 +295,7 @@ export default [
     categories: ["Reverb"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Pre-delay", "Gate time", "Damping"],
     download: {
       spn: { file: "spinsemi/3K_V1_3_GATED.spn" },
     },
@@ -279,6 +307,7 @@ export default [
     categories: ["Reverb", "Delay"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Delay", "Repeat", "Reverb"],
     download: {
       spn: { file: "spinsemi/3K_V1_4_ECHO-REV.spn" },
     },
@@ -301,6 +330,7 @@ export default [
     categories: ["Reverb","Chorus"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Chorus width", "Sweep rate", "Reverb"],
     download: {
       spn: { file: "spinsemi/3K_V1_6_CHOR-REV.spn" },
     },
@@ -312,6 +342,7 @@ export default [
     categories: ["Flanger"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Delay", "Sweep rate", "Sweep width"],
     download: {
       spn: { file: "spinsemi/3K_V1_7_FLANGE.spn", },
     },
@@ -369,6 +400,7 @@ export default [
     categories: ["Chorus","Reverb"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["Reverb mix", "Rate", "Mix + Width"],
     download: {
       spn: { file: "spinsemi/rom_chor_rev.spn", },
     },
@@ -428,6 +460,8 @@ export default [
   {
     name: "Plate Reverb: Very Tight",
     categories: ["Reverb"],
+    controls: ["Reverb time", "Low freq loss", "High freq loss"],
+    description: "Very tight, characterized by extreme density, slight tinnyness, explosive initial sound",
     author: "Harmon Grold",
     download: {
       spn: {
@@ -438,7 +472,9 @@ export default [
   },
   {
     name: "Plate Reverb: Tight",
+    description: "Tight, characterized by very high density, slight tinnyness, explosive initial sound",
     categories: ["Reverb"],
+    controls: ["Reverb time", "Low freq loss", "High freq loss"],
     author: "Harmon Grold",
     download: {
       spn: {
@@ -449,7 +485,9 @@ export default [
   },
   {
     name: "Plate Reverb",
+    description: "Lush (large), characterized by very high density, explosive initial sound, large",
     categories: ["Reverb"],
+    controls: ["Reverb time", "Low freq loss", "High freq loss"],
     author: "Harmon Grold",
     download: {
       spn: {
@@ -460,15 +498,30 @@ export default [
   },
   {
     name: "Distortion",
-    categories: ["Distortion"],
+    categories: ["Distortion","Code snippet"],
     author: "Spin Semi",
     author_url: "http://spinsemi.com/",
+    controls: ["-","-","-"],
     download: {
       spn: {
-        file: "dist.spn",
+        file: "spinsemi/dist.spn",
       }
     },
-    source_url: "http://spinsemi.com/programs.php"
+    source_url: "http://spinsemi.com/programs.php",
+    commentary: [
+      {
+        written_by: "Spin Semi",
+        comments: { text: `;begin distorting signal at -18dB (input referred).
+;At the output, the signal will begin to distort at half
+;of full scale, and further increase of input signal will
+;cause increasingly 'flattened' signal peaks.
+
+;This is an ideal module to be driven by a compressor,
+;where sustained notes can be on the edge of distortion,
+;and actual signal clipping can be prohibited.
+;mono in, mono out, no controls, 24 ticks`}
+      },
+    ],
   },
 
 
@@ -481,14 +534,16 @@ export default [
         file: "dervish/dual-lfo-chorus.spn"
       }
     },
+    controls: ["Rate 1", "Rate 2", "Depth"],
     author: "Graham Biswell",
     source_url: "https://www.muffwiggler.com/forum/viewtopic.php?t=160436",
-    description: "Chorus with Rate and Depth controls and sounds just like a normal chorus but adds in the 2nd rate control to spook things up a bit",
+    description: "Chorus with Rate and Depth controls and sounds just like a normal chorus but adds in the 2nd rate control to spook things up a bit. Rate 2 completely CCW turns it off.",
   },
   {
     name: "dattorro-shimmer_oct_var-lvl.spn",
     description: "Dattorro Mix Reverb",
     categories: ["Reverb","Shimmer","Octave","Dattorro"],
+    controls: ["Shimmer level", "Time", "Damping"],
     download: {
       spn: {
         file: "dervish/dattorro-mixed/dattorro-shimmer_oct_var-lvl.spn",
@@ -500,6 +555,7 @@ export default [
     name: "dattorro-var_filter-var_damping.spn",
     description: "Dattorro Mix Reverb",
     categories: ["Reverb","Dattorro"],
+    controls: ["Filter", "Time", "Damping"],
     download: {
       spn: {
         file: "dervish/dattorro-mixed/dattorro-var_filter-var_damping.spn",
@@ -511,6 +567,7 @@ export default [
     name: "dattorro-var_filter-var_predelay.spn",
     description: "Dattorro Mix Reverb",
     categories: ["Reverb","Dattorro"],
+    controls: ["Pre-delay", "Time", "Filter"],
     download: {
       spn: {
         file: "dervish/dattorro-mixed/dattorro-var_filter-var_predelay.spn",
@@ -522,6 +579,7 @@ export default [
     name: "dattorro-var_predelay-var_damping-1k.spn",
     description: "Dattorro Mix Reverb",
     categories: ["Reverb","Dattorro"],
+    controls: ["Pre-delay", "Time", "Damping"],
     download: {
       spn: {
         file: "dervish/dattorro-mixed/dattorro-var_predelay-var_damping-1k.spn",
@@ -533,6 +591,7 @@ export default [
     name: "dattorro-var_predelay-var_damping-2k.spn",
     description: "Dattorro Mix Reverb",
     categories: ["Reverb","Dattorro"],
+    controls: ["Pre-delay", "Time", "Damping"],
     download: {
       spn: {
         file: "dervish/dattorro-mixed/dattorro-var_predelay-var_damping-2k.spn",
@@ -544,6 +603,7 @@ export default [
     name: "dattorro-var_predelay-var_damping-4k.spn",
     description: "Dattorro Mix Reverb",
     categories: ["Reverb","Dattorro"],
+    controls: ["Pre-delay", "Time", "Damping"],
     download: {
       spn: {
         file: "dervish/dattorro-mixed/dattorro-var_predelay-var_damping-4k.spn",
@@ -555,6 +615,7 @@ export default [
     name: "dattorro-var_predelay-var_damping-8k.spn",
     description: "Dattorro Mix Reverb",
     categories: ["Reverb","Dattorro"],
+    controls: ["Pre-delay", "Time", "Damping"],
     download: {
       spn: {
         file: "dervish/dattorro-mixed/dattorro-var_predelay-var_damping-8k.spn",
@@ -566,6 +627,7 @@ export default [
     name: "dattorro-var_predelay-var_damping-500.spn",
     description: "Dattorro Mix Reverb",
     categories: ["Reverb","Dattorro"],
+    controls: ["Pre-delay", "Time", "Damping"],
     download: {
       spn: {
         file: "dervish/dattorro-mixed/dattorro-var_predelay-var_damping-500.spn",
@@ -577,6 +639,7 @@ export default [
     name: "dattorro_1oct_pitch-ip+fb-2k.spn",
     description: "Dattorro reverb with fixed 1oct frequency pitch shift",
     categories: ["Reverb","Dattorro","Octave","Pitch"],
+    controls: ["Shift level", "Time", "Damping"],
     download: {
       spn: {
         file: "dervish/dattorro-mixed/dattorro_1oct_pitch-ip+fb-2k.spn",
@@ -599,6 +662,7 @@ export default [
     name: "dattorro_var_pitch-ip+fb-4k.spn",
     description: "Dattorro reverb with variable frequency pitch shift applied to input signal and feedback",
     categories: ["Reverb","Dattorro","Pitch"],
+    controls: ["Frequency shift", "Time", "Damping"],
     download: {
       spn: {
         file: "dervish/dattorro-mixed/dattorro_var_pitch-ip+fb-4k.spn",
@@ -610,6 +674,7 @@ export default [
     name: "dattorro_var_pitch-ip-4k.spn",
     description: "Dattorro reverb with variable frequency pitch shift applied to input signal",
     categories: ["Reverb","Dattorro","Pitch"],
+    controls: ["Frequency shift", "Time", "Damping"],
     download: {
       spn: {
         file: "dervish/dattorro-mixed/dattorro_var_pitch-ip-4k.spn",
@@ -621,6 +686,7 @@ export default [
     name: "dattorro-shimmer_val-lvl.spn",
     description: "Dattorro Mix Reverb",
     categories: ["Reverb","Shimmer"],
+    controls: ["Shimmer", "Reverb time", "Damping"],
     download: {
       spn: {
         file: "dervish/dattorro-shimmer/dattorro-shimmer_val-lvl.spn",
@@ -642,6 +708,7 @@ export default [
   {
     name: "Single Head Tape Echo + Spring Reverb",
     categories: ["Reverb","Delay"],
+    controls: ["Time", "Feedback", "Reverb"],
     download: {
       spn: {
         file: "dervish/drv102/dv102-1head-reverb.spn"
@@ -652,6 +719,7 @@ export default [
   {
     name: "Dual Head Tape Echo + Spring Reverb",
     categories: ["Reverb","Delay"],
+    controls: ["Time", "Feedback", "Reverb"],
     download: {
       spn: {
         file: "dervish/drv102/dv102-2head-reverb.spn"
@@ -662,6 +730,7 @@ export default [
   {
     name: "Single Head Tape Echo + Spring Reverb w/ Ping Pong",
     description: "Not very tape echo like, really",
+    controls: ["Time", "Feedback", "Level"],
     categories: ["Reverb","Delay"],
     download: {
       spn: {
@@ -674,6 +743,7 @@ export default [
     name: "Dual Head Tape Echo + Spring Reverb w/ Ping Pong",
     description: "Not very tape echo like, really",
     categories: ["Reverb","Delay"],
+    controls: ["Time", "Feedback", "Level"],
     download: {
       spn: {
         file: "dervish/drv102/dv102-pp-2head-reverb.spn"
@@ -684,6 +754,7 @@ export default [
   {
     name: "Single Head Tape Echo",
     categories: ["Delay"],
+    controls: ["Time", "Feedback", "Damping"],
     download: {
       spn: {
         file: "dervish/drv103/dv103-1head.spn"
@@ -694,6 +765,7 @@ export default [
   {
     name: "Single Head Tape Echo + Reverb",
     categories: ["Delay", "Reverb"],
+    controls: ["Time", "Feedback", "Damping"],
     download: {
       spn: {
         file: "dervish/drv103/dv103-1head-4xreverb.spn",
@@ -704,6 +776,7 @@ export default [
   {
     name: "Ping Pong",
     categories: ["Delay"],
+    controls: ["Time", "Feedback", "Damping"],
     download: {
       spn: {
         file: "dervish/drv103/dv103-1head-pp.spn",
@@ -714,6 +787,7 @@ export default [
   {
     name: "Ping Pong 2:1",
     categories: ["Delay"],
+    controls: ["Time", "Feedback", "Damping"],
     download: {
       spn: {
         file: "dervish/drv103/dv103-1head-pp-2_1.spn",
@@ -725,6 +799,7 @@ export default [
     name: "Dual Head Tape Echo + Reverb, w/ Ping Pong",
     description: "reverb code is a 2 tap version of the Spin OEM1 Vocal Plate",
     categories: ["Delay", "Reverb"],
+    controls: ["Time", "Feedback", "Damping"],
     download: {
       spn: {
         file: "dervish/drv103/dv103-1head-pp-2_1-4xreverb.spn",
@@ -736,6 +811,7 @@ export default [
     name: "Dual Head Tape Echo + Reverb",
     description: "reverb code is a 2 tap version of the Spin OEM1 Vocal Plate",
     categories: ["Delay", "Reverb"],
+    controls: ["Delay time", "Feedback", "Damping"],
     download: {
       spn: {
         file: "dervish/drv103/dv103-2head-2_1-reverb.spn",
@@ -746,6 +822,7 @@ export default [
   {
     name: "Stereo Pitch Transposer w/ Feedback and Delay",
     categories: ["Delay", "Pitch"],
+    controls: ["Pitch", "Feedback", "Delay"],
     download: {
       spn: {
         file: "dervish/pitch+fb+delay.spn",
@@ -785,6 +862,7 @@ export default [
     description: "Basic pingpong with adjustable feedback & damping ; damping has hpf & lpf ; some added wonkiness",
     author: "Graham Biswell",
     categories: ["Delay"],
+    controls: ["Time", "Feedback", "Damping"],
     download: {
       spn: {
         file: "dervish/pingpong/pp-basic-wonky.spn",
@@ -797,6 +875,7 @@ export default [
     description: "Basic pingpong with adjustable feedback & damping ; damping has hpf & lpf",
     author: "Graham Biswell",
     categories: ["Delay"],
+    controls: ["Time", "Feedback", "Damping"],
     download: {
       spn: {
         file: "dervish/pingpong/pp-basic.spn",
@@ -868,6 +947,7 @@ export default [
     name: "Triple Tap Cascaded Delay",
     author: "Graham Biswell",
     categories: ["Delay"],
+    controls: ["Time 1", "Time 2", "Time 3"],
     download: {
       spn: {
         file: "dervish/triple/tripple_echo_cascaded.spn",
@@ -879,6 +959,7 @@ export default [
     name: "Triple Tap Cascaded Delay - Stereo",
     author: "Graham Biswell",
     categories: ["Delay"],
+    controls: ["Time 1", "Time 2", "Time 3"],
     download: {
       spn: {
         file: "dervish/triple/tripple_echo_cascaded_stereo.spn",
@@ -890,6 +971,7 @@ export default [
     name: "Triple Tap Cascaded Delay - Stereo w/ Chorus",
     author: "Graham Biswell",
     categories: ["Delay", "Chorus"],
+    controls: ["Time 1", "Time 2", "Time 3"],
     download: {
       spn: {
         file: "dervish/triple/tripple_echo_cascaded_stereo+chorus.spn",
@@ -902,6 +984,7 @@ export default [
     description: "taps are treated in parallel ; feedback & damping are fixed",
     author: "Graham Biswell",
     categories: ["Delay"],
+    controls: ["Time 1", "Time 2", "Time 3"],
     download: {
       spn: {
         file: "dervish/triple/tripple_echo_parallel.spn",
@@ -914,6 +997,7 @@ export default [
     description: "taps are treated in parallel ; feedback & damping are fixed, but f/b varies slighly depending on delay time (longer time, less f/b) ; damping for each tap is different",
     author: "Graham Biswell",
     categories: ["Delay"],
+    controls: ["Time 1", "Time 2", "Time 3"],
     download: {
       spn: {
         file: "dervish/triple/tripple_echo-var_fb.spn",
@@ -926,6 +1010,7 @@ export default [
     description: "taps are treated in parallel ; feedback & damping are fixed, but f/b varies slighly depending on delay time (longer time, less f/b) ; damping for each tap is different; With chorus",
     author: "Graham Biswell",
     categories: ["Delay", "Chorus"],
+    controls: ["Time 1", "Time 2", "Time 3"],
     download: {
       spn: {
         file: "dervish/triple/tripple_echo-var_fb+chorus.spn",
@@ -937,6 +1022,7 @@ export default [
   {
     name: "Plate Reverb - Dattorro",
     categories: ["Reverb", "Dattorro"],
+    controls: ["Reverb level", "Reverb time", "Damping"],
     download: {
       spn: {
         file: "dattorro.spn",
@@ -966,6 +1052,7 @@ export default [
     name: "Greenwood Delay",
     author: "slacker",
     categories: ["Delay"],
+    controls: ["Speed", "Time", "Randomness"],
     download: {
       spn: {
         file: "greenwood-delay.spn",
@@ -988,6 +1075,7 @@ export default [
     name: "Reverse Reverb",
     author: "Malekko",
     categories: ["Reverb"],
+    controls: ["Pre-delay", "Decay time", "Damping"],
     download: {
       spn: {
         file: "RevRev.spn"
@@ -998,6 +1086,7 @@ export default [
     name: "Hall Reverb w/ Shimmer",
     author: "Sweetalk",
     categories: ["Reverb", "Shimmer"],
+    controls: ["Damping", "Feedback", "Decay"],
     download: {
       spn: {
         file: "shimmer-1.spn"
@@ -1007,6 +1096,7 @@ export default [
   {
     name: "New Shimmer Reverb",
     categories: ["Reverb", "Shimmer"],
+    controls: ["Shimmer", "Reverb level", "Reverb time"],
     download: {
       spn: {
         file: "shimmer-2.spn"
@@ -1017,6 +1107,7 @@ export default [
   {
     name: "Octave Up and Down",
     categories: ["Octave","Pitch"],
+    controls: ["Mix", "Octave up", "Octave down"],
     download: {
       spn: {
         file: "up-down-octaver.spn"
@@ -1028,6 +1119,7 @@ export default [
     name: "Stereo Tremolo",
     author: "Digital Larry",
     categories: ["Tremolo"],
+    controls: ["Left speed", "Right speed", "-"],
     download: {
       spn: {
         file: "stereo-tremolo.spn",
@@ -1051,9 +1143,10 @@ export default [
     name: "Triple Delay w/ Feedback",
     author: "Digital Larry",
     categories: ["Delay"],
+    controls: ["Time 1", "Times 2 & 3", "Feedback"],
     download: {
       spn: {
-        file: "stereo-ring-modulators-with-chorus.spn",
+        file: "triple-delay-feedback.spn",
       }
     },
     source_url: "http://www.spinsemi.com/forum/viewtopic.php?f=4&t=452",
@@ -1068,6 +1161,7 @@ export default [
     name: "Stereo Dual Flange Multi Tap Delay",
     author: "Digital Larry",
     categories: ["Delay","Flanger"],
+    controls: ["Feedback", "Resonance and time", "Return level"],
     download: {
       spn: {
         file: "stereo-dual-flange-multi-tap-delay.spn",
@@ -1079,6 +1173,7 @@ export default [
     name: "Modulated Echo",
     author: "patb",
     categories: ["Delay"],
+    controls: ["Time", "Depth", "Level"],
     download: {
       spn: {
         file: "modulated-echo.spn",
@@ -1145,6 +1240,7 @@ export default [
     description: "Rate and Depth controls and sounds just like a normal chorus but adds in the 2nd rate control to spook things up a bit",
     author: "ice-nine",
     categories: ["Chorus"],
+    controls: ["Chorus level", "Rate 1", "Rate 2"],
     download: {
       spn: {
         file: "chorus-dual-rate.spn",
@@ -1223,9 +1319,8 @@ In addition, the longer the chorus delay time, the less width you need to achiev
     author: "Digital Larry",
     categories: ["Tremolo"],
     download: {
-      spcd: {
-        file: "holy-city-audio/filter-tremolo-example.spcd",
-      }
+      spcd: { file: "holy-city-audio/filter-tremolo-example.spcd", },
+      spn: { file: "holy-city-audio/filter-tremolo-example.spn", },
     },
     source_url: "https://www.diystompboxes.com/smfforum/index.php?topic=123725.0",
     commentary: [
@@ -1270,6 +1365,7 @@ This is similar to harmonic tremolo as found in some vintage tube amps. Harmonic
     author: "Digital Larry",
     description: "Flanger using rectified-sine modulation.  LFO frequency and width are in inverse relationship from the pot to give good results over a wide frequency range with one knob.",
     categories: ["Flanger"],
+    controls: ["LFO rate/width", "Resonance", "Delay offset"],
     download: {
       spn: {
         file: "holy-city-audio/new-flanger.spn",
@@ -1280,7 +1376,6 @@ This is similar to harmonic tremolo as found in some vintage tube amps. Harmonic
   {
     name: "Oil can delay",
     author: "Digital Larry",
-    description: "Flanger using rectified-sine modulation.  LFO frequency and width are in inverse relationship from the pot to give good results over a wide frequency range with one knob.",
     categories: ["Delay"],
     download: {
       spn: {
@@ -1359,6 +1454,7 @@ Pot2 = feedback` }
   {
     name: "Shimmer",
     author: "Digital Larry",
+    controls: ["Level", "Filter", "Time"],
     categories: ["Reverb", "Shimmer"],
     download: {
       spcd: { file: "holy-city-audio/shimmer.spcd", },
@@ -1487,6 +1583,7 @@ P2 sets the sinewave tremolo speed from 0 - slow - fast. This gets really intere
     author: "Don Stavely",
     description: "Spring reverbs sound 'boingy' because of dispersion in the spring - higher frequencies travel slower than low frequencies. A 'spectral delay filter', consisting of many (100's) of unit allpasses will produce the desired 'chirp' impulse response...",
     categories: ["Tremolo", "Reverb"],
+    controls: ["Reverb", "Rate", "Depth"],
     download: {
       spn: {
         file: "spring_verb.spn",
@@ -1547,7 +1644,7 @@ P2 sets the sinewave tremolo speed from 0 - slow - fast. This gets really intere
     description: "Automatic wah effect based on the signal volume. Designed for bass",
     author: "Firesledge",
     author_url: "http://ldesoras.free.fr/",
-    categories: ["Filter", "Bass"],
+    categories: ["Filter", "Bass", "Wah"],
     controls: ["Amount", "Resonance", "Frequency"],
     download: {
       spn: { file: "firesledge/bass-fv1-p4-autowah.spn", },
@@ -1571,6 +1668,12 @@ P2 sets the sinewave tremolo speed from 0 - slow - fast. This gets really intere
       spn: { file: "firesledge/bass-fv1-p5-disto.spn", },
       spcd: { file: "firesledge/bass-fv1-p5-disto.spcd", }
     },
+    commentary: [
+      {
+        written_by: "Mark S.",
+        comments: { text: "When using with a guitar, the tone knob isn't terribly useful, but once you find a good spot for it, it really rips.  You can get some thick, meaty fuzz with this." }
+      },
+    ],
   },
   {
     name: "Filter tremolo+",
@@ -1593,7 +1696,7 @@ P2 sets the sinewave tremolo speed from 0 - slow - fast. This gets really intere
   {
     name: "Starfield+",
     description: "Harmonic tremolo mixed with a delay. Based on Madbeanpedals Starfield.",
-    author: "Firesledge, madbeanpedals",
+    author: "Firesledge",
     author_url: "http://ldesoras.free.fr/",
     categories: ["Delay", "Tremolo", "Bass"],
     controls: ["Delay", "Speed + Delay/Tremolo mix", "Dry/wet mix"],
@@ -1606,7 +1709,7 @@ P2 sets the sinewave tremolo speed from 0 - slow - fast. This gets really intere
   {
     name: "8 second delay",
     description: "This delays an input by eight seconds. It inteleaves the signal 8 ways in a single max sized delay",
-    author: "sebxx4",
+    author: "Don Stavely",
     categories: ["Delay", "Code snippet"],
     download: {
       spn: { file: "8_seconds_delay.spn" }
@@ -1625,6 +1728,7 @@ P2 sets the sinewave tremolo speed from 0 - slow - fast. This gets really intere
     description: "Simplified part of A+ Paradox delay",
     author: "igore pie",
     author_url: "mailto:igor@shift-line.com",
+    controls: ["-", "Feedback", "Delay"],
     categories: ["Delay"],
     download: {
       spn: { file: "afx_reverse_delay.spn" }
@@ -1635,6 +1739,7 @@ P2 sets the sinewave tremolo speed from 0 - slow - fast. This gets really intere
     name: "Aliaser",
     author: "Frank Thomson, OCT Distribution",
     categories: ["Aliaser"],
+    controls: ["Sample rate", "-", "-"],
     download: {
       spn: { file: "aliaser.spn" }
     },
@@ -1688,6 +1793,7 @@ P2 sets the sinewave tremolo speed from 0 - slow - fast. This gets really intere
     author: "patb",
     description: "Inspired by commercial pedals. It has 6 programs, selectable by pot0",
     categories: ["Pitch"],
+    controls: ["Program select", "Cross fade", "Wet / dry mix"],
     download: {
       spn: { file: "multipitch.spn" }
     },
@@ -1715,6 +1821,7 @@ This one sounds very nice.  Laughing
     name: "Reverse delay",
     author: "Knut Helle",
     categories: ["Delay"],
+    controls: ["Length", "-", "-"],
     download: {
       spn: { file: "reverse_delay.spn" }
     },
@@ -1734,6 +1841,7 @@ This one sounds very nice.  Laughing
     author: "Alex Lawrow",
     description: "This routine is based on Mick Taylor's (Ice-9s) reverb loop and shimmer code with some changes such as...",
     categories: ["Pitch"],
+    controls: ["Reverb time", "Treble", "Shimmer"],
     download: {
       spn: { file: "shimmer_drAlx.spn" }
     },
@@ -1760,7 +1868,7 @@ and shimmer code with some changes such as:
     ],
   },
   {
-    name: "Slocum Phase shifter",
+    name: "Slocum Phase Shifter",
     description: "From GA_DEMO - mods by Doug Slocum 10/20/2017",
     author: "Doug Slocum, Spin Semi",
     categories: ["Phase"],
@@ -1789,7 +1897,9 @@ and shimmer code with some changes such as:
   {
     name: "Geoffrey: Pitch shifted delay",
     author: "slacker",
+    description: "Pitch shift is +5th, +7th, +1 Octave, +M3rd",
     categories: ["Pitch", "Delay"],
+    controls: ["Delay", "Pitch select", "Feedback"],
     download: {
       spn: { file: "slacker-bf/bf_geoffrey.spn" }
     },
@@ -1798,14 +1908,16 @@ and shimmer code with some changes such as:
     name: "New octaver",
     author: "slacker",
     categories: ["Uncategorized"],
+    controls: ["Dry mix", "Octave up", "Octave down"],
     download: {
       spn: { file: "slacker-bf/bf_newoctaver.spn" }
     },
   },
   {
-    name: "Flanger",
+    name: "Phaser",
     author: "slacker",
     categories: ["Flanger","Phaser"],
+    controls: ["Feedback (+/-)", "Range", "Speed"],
     download: {
       spn: { file: "slacker-bf/bf_phaser.spn" }
     },
@@ -1814,8 +1926,18 @@ and shimmer code with some changes such as:
     name: "Digifuzzer",
     author: "slacker",
     categories: ["Distortion"],
+    controls: ["Sample rate reduction", "Bit depth + distortion", "Volume"],
     download: {
       spn: { file: "slacker-bf/bf_digifuzzer.spn" }
+    },
+  },
+  {
+    name: "Johnny",
+    author: "slacker",
+    categories: ["Uncategorized"],
+    controls: ["Speed", "Max delay", "Randomness"],
+    download: {
+      spn: { file: "slacker-bf/bf_johnny.spn" }
     },
   },
   {
@@ -1823,6 +1945,7 @@ and shimmer code with some changes such as:
     author: "David Rolo",
     author_url: "https://www.davidrolo.com/",
     categories: ["Filter", "Phaser"],
+    controls: ["Rate", "Depth", "Regen"],
     download: {
       spn: { file: "drolo/envelope-phaser.spn" }
     },
@@ -1832,6 +1955,7 @@ and shimmer code with some changes such as:
     author: "David Rolo",
     author_url: "https://www.davidrolo.com/",
     categories: ["Filter"],
+    controls: ["Sensitivity", "Filter Type", "Volume"],
     download: {
       spn: { file: "drolo/filter-env-LP-HP-up.spn" }
     },
@@ -1841,6 +1965,7 @@ and shimmer code with some changes such as:
     author: "David Rolo",
     author_url: "https://www.davidrolo.com/",
     categories: ["Flanger"],
+    controls: ["Rate", "Feedback", "Range"],
     download: {
       spn: { file: "drolo/flanger.spn" }
     },
@@ -1850,6 +1975,7 @@ and shimmer code with some changes such as:
     author: "David Rolo",
     author_url: "https://www.davidrolo.com/",
     categories: ["Pitch"],
+    controls: ["Rate","Depth","Glide"],
     download: {
       spn: { file: "drolo/pitch-step-glider.spn" }
     },
@@ -1868,6 +1994,7 @@ and shimmer code with some changes such as:
     author: "David Rolo",
     author_url: "https://www.davidrolo.com/",
     categories: ["Reverb"],
+    controls: ["Decay", "Pre-delay", "Filter"],
     download: {
       spn: { file: "drolo/reverb.spn" }
     },
@@ -1891,19 +2018,15 @@ and shimmer code with some changes such as:
   {
     name: "Resonator",
     categories: ["Uncategorized"],
+    controls: ["Frequency", "Resonance", "-"],
     download: {
       spn: { file: "resonator.spn" }
     },
-    commentary: [
-      {
-        written_by: "Mark S.",
-        comments: { text: "I didn't get this to work." },
-      },
-    ],
   },
   {
     name: "BM Pi",
-    categories: ["Uncategorized"],
+    categories: ["Distortion"],
+    controls: ["Gain", "Tone", "-"],
     download: {
       spn: { file: "bm-pi.spn" }
     },
@@ -1980,6 +2103,7 @@ and shimmer code with some changes such as:
     name: "Slow Gear",
     author: "patb, Don Stavely",
     categories: ["Uncategorized"],
+    controls: ["Attack rate", "-", "-"],
     download: {
       spn: { file: "slowgear-2.spn" },
     },
@@ -2016,12 +2140,37 @@ and shimmer code with some changes such as:
         written_by: "Slacker",
         comments: { text: "If anyone's interested here's a tremolo I did using pot skip routines to do Sine, rectified sine both ways so pointy or humpy :) up and down ramps, triangle, trapezoid and square. All the wave shapes are scaled to the same range. Some of the wave shapes aren't that useful it was more an exercise in generating them than an attempt at a decent trem." },
       },
+      {
+        written_by: "Mark S.",
+        comments: { text: "I'm getting some really prominent clicking on some of the wave shapes." }
+      },
+    ],
+  },
+  {
+    name: "Tremolo w/ Multiple LFO Waveshapes (no clicks)",
+    author: "Slacker, mstratman",
+    categories: ["Tremolo"],
+    download: {
+      spn: { file: "tremolo-shapes-reduced.spn" },
+    },
+    controls: ["Wave shape", "Depth", "Speed"],
+    source_url: "http://www.spinsemi.com/forum/viewtopic.php?f=3&t=516",
+    commentary: [
+      {
+        written_by: "Mark S.",
+        comments: { text: "This is a version of slacker's tremolo that removes 2 wave shapes that were giving clicky sounds.  It features: sine, hump, hyper-triangle, triangle, trapezoid, square" }
+      },
+      {
+        written_by: "Slacker",
+        comments: { text: "If anyone's interested here's a tremolo I did using pot skip routines to do Sine, rectified sine both ways so pointy or humpy :) up and down ramps, triangle, trapezoid and square. All the wave shapes are scaled to the same range. Some of the wave shapes aren't that useful it was more an exercise in generating them than an attempt at a decent trem." },
+      },
     ],
   },
   {
     name: "Whammy",
     author: "deepMago!",
     categories: ["Pitch"],
+    controls: ["Whammy", "Pitch range", "-"],
     download: {
       spn: { file: "whammy.spn" },
     },

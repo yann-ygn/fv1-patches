@@ -1,222 +1,195 @@
-; Hall reverb w/shimmer
-; Jan 2012
-;
-;
-; Mono input, Stereo output
-; POT0: Damping
-; POT1: Feedback
-; POT2: Decay
-;
-; by Sweetalk
+;Stereo reverb with 3 variables:
+;pot0 = reverb time
+;pot1 = diffusion
+;pot2 = decay filtering
+;95 ticks
+
+equ	krt	reg0	;reverb time
+equ	kdiff	reg1	;input AP diffusion coefficients
+equ	kfh	reg2	;high freq shelf
+equ	kfl	reg3	;low freq shelf
+equ	temp1	reg4	;temporary register
+equ	temp2	reg5
+equ	temp3	reg6
+equ	fil_ll	reg7
+equ	fil_lh	reg8
+equ	fil_rl	reg9
+equ	fil_rh	reg10
+equ	kin	reg11	;input scaling, function of Krt
+
+equ	kap	0.6	;loop AP coefficients
+equ	kapi	0.65	;input AP coefficient
+equ	kluph	0.3	;loop high cut freq
+equ	klupl	0.03	;loop low cut freq
+
+mem	apl1	420
+mem	apl2	867
+mem	apl3	1578
+mem	apl4	390
+
+mem	apr1	450
+mem	apr2	909
+mem	apr3	1630
+mem	apr4	576
+
+mem	apcl1	3402
+mem	apcl2	2202
+mem	dcl	7678
+
+mem	apcr1	3167
+mem	apcr2	2009
+mem	dcr	7353
+
+;prepare pots:
+
+rdax	pot0,1
+log	0.5,0
+exp	1,0		;square root of pot
+sof	0.7,0.2		;rt spans 0.2 to 0.9
+wrax	krt,-0.8
+sof	1,0.999
+wrax	kin,0		;input scaling coefficient
 
 
+rdax	pot1,0.7
+wrax	kdiff,0		;input AP Ks from 0 to 0.7
 
-;MEMORY
-mem   delayl   2048 ; 4096      ; Pitch Shift mem
-mem   temp1   1       
+sof	0,-0.5		;load -0.5
+rdax	pot2,1		;add pot2, ranges -0.5 to +0.5
+sof	1.9999,0	;ranges -1 to +1
+wrax	temp1,1
+skp	neg,1
+clr			;do not allow to go positive
+wrax	kfh,0		;store low shelf, -1 to 0 (at mid pos)
+rdax	temp1,1		;get pot back
+sof	-1,0		;change sign
+skp	neg,1
+clr
+wrax	kfl,0		;same with high shelf, 0 (at mid pos) to -1
 
-mem   iap1   156      ; Reverb mem declarations
-mem   iap2   223
-mem   iap3   332
-mem   iap4   448
+;now do reverb:
 
-mem   ap1   1251
-mem   ap1b   1751
-mem   ap2   1443
-mem   ap2b   1343
-mem   ap3   1582
-mem   ap3b   1981
-mem   ap4   1274
-mem   ap4b   1382
+;do 3 input all passes, controlled by the variable Kdiff
 
-mem   del1   3559
-mem   del2   2945
-mem   del3   3976
-mem   del4   4445
+rdax	adcl,0.5	;read in left side, leave headroom
+mulx	kin
+wrax	temp3,0
 
+rda	apl1#,1		;read first AP output
+mulx	kdiff		;mult by diffusion
+rdax	temp3,1		;read in left side, leave headroom
+wra	apl1,-1		;write result to AP delay, change sign
+mulx	kdiff		;mult by diffusion
+rda	apl1#,1		;read AP out again
+wrax	temp1,0		;save to temp and clear ACC
 
-;REGISTERS
-equ   revin      reg0      ;Reverb In
-equ   revout      reg1      ;Reverb Out
-equ   pitchout   reg2      ;Pitch Shift Out. (really it's Reverb->Pitch out)   
-equ   LPF      reg3      ;LPF reg
+rda	apl2#,1		
+mulx	kdiff		
+rdax	temp1,1		
+wra	apl2,-1		
+mulx	kdiff		
+rda	apl2#,1		
+wrax	temp1,0		
 
-equ   temp   reg4      ;Temp register
-equ   hpf1   reg5      ;High pass filters for reverb registers
-equ   hpf2   reg6
-equ   hpf3   reg7
-equ   hpf4   reg8
-equ   lpf1   reg9      ;Low pass filters for reverb registers
-equ   lpf2   reg10
-equ   lpf3   reg11
-equ   lpf4   reg12
-equ   rt   reg13      ;Reverb Time register
-equ   iapout   reg14       
+rda	apl3#,1		
+mulx	kdiff		
+rdax	temp1,1		
+wra	apl3,-1		
+mulx	kdiff		
+rda	apl3#,1		
 
+rda	apl4#,kapi	;read fourth input AP, fixed coefficient
+wrap	apl4,-kapi	
+rdax	temp1,0		;save in temp reg
 
-;CONSTANTS
-equ   LPFF   0.3      ;LPF coefficent for LPF after pitch shifting
-equ   LPFSH   -0.5      ;Shelving coefficent for LPF -6dB.
-equ   kfh   0.01
-equ   kfl   0.4
-equ   kiap   0.5
-equ   klap   0.6
+;input all passes are now done. Now we add in the loop signal and filter:
 
+rda	dcr#,1		;read right delay output
+rdfx	fil_ll,klupl	;set up low pass filter for high pass operation
+wrax	fil_ll,1	;change sign on lpf output
+mulx	kfl		;scale by lower end of pot2 range
+rda	dcr#,1		;read back the delay output
+wrax	temp2,1		;save, continue in ACC
+rdfx	fil_lh,kluph	;do low pass for high end control
+wrhx	fil_lh,-1	;create infinite shelf high pass
+mulx	kfh		;scale by upper end of pot2 range
+rdax	temp2,1		;sum back temp value
 
-;PITCH SHIFTER RAMP0 INIT
-skp   run,   START
-wldr   0,   16384,   4096   ;Init RAMP0 for +1 octave pitch shifting
+;Loop feedback is now in place, filtered. 
+;scale by Krt, sum in input AP signal.
 
-START:
+mulx	krt
+rdax	temp1,1		;sum in input all pass filters
+rda	apcl1#,kap
+wrap	apcl1,-kap	;do left loop all pass
+rda	apcl2#,kap
+wrap	apcl2,-kap	;do left loop all pass
+wra	dcl,0		;write result to left loop delay
 
-;Prepare POT2 for Decay
-rdax   pot2,1
-sof   0.65,0.3   ;Scale by 0.65 and add 0.3
-wrax   rt,0            ;rt ranges 0.3 to 0.95
+;now do the same to the right channel:
 
+rdax	adcr,0.5	;read in right side, leave headroom
+mulx	kin
+wrax	temp3,0
 
-;REVERB
-rdax   revin,   1   ;Read reverb in
-sof   0.25,   0   ;   
-rda   iap1#,   kiap   
-wrap   iap1,   -kiap     
-rda   iap2#,   kiap   
-wrap   iap2,   -kiap     
-rda   iap3#,   kiap   
-wrap   iap3,   -kiap     
-rda   iap4#,   kiap   
-wrap   iap4,   -kiap     
-wrax   iapout,   0   ;write to register for ring injection
+rda	apr1#,1		
+mulx	kdiff		
+rdax	temp3,1	
+wra	apr1,-1		
+mulx	kdiff		
+rda	apr1#,1		
+wrax	temp1,0		
 
-;now do reverb ring, use temp as reg for filtering:
+rda	apr2#,1		
+mulx	kdiff		
+rdax	temp1,1		
+wra	apr2,-1		
+mulx	kdiff		
+rda	apr2#,1		
+wrax	temp1,0		
 
-;aps into delay1:
+rda	apr3#,1		
+mulx	kdiff		
+rdax	temp1,1		
+wra	apr3,-1		
+mulx	kdiff		
+rda	apr3#,1		
 
-rda   del4#,   1   ;read previous delay   
-mulx   rt      ;multiply by reverb time coefficient
-rdax   iapout,   1   ;read left input from input allpass filter bank
-rda   ap1#,   klap   ;do an allpass filter
-wrap   ap1,   -klap
-rda   ap1b#,   klap   ;do second all pass filter
-wrap   ap1b,   -klap   
-wrax   temp,   1   ;write to temp, keep in acc
-rdfx   lpf1,   kfl   ;low pass filter
-wrlx   lpf1,   -1
-rdfx   hpf1,   kfh   ;high pass filter
-wrhx   hpf1,   -1
-rdax   temp,   -1
-mulx   pot0      ;crossfade between filter and no filter
-rdax   temp,   1
-wra   del1,   0   ;write to next delay, clear accumulator
+rda	apr4#,kapi	;read fourth input AP, fixed coefficient
+wrap	apr4,-kapi	
+rdax	temp1,0		;save in temp reg
 
-;aps into delay2:
+;input all passes are now done. Now we add in the loop signal and filter:
 
-rda   del1#,   1     
-mulx   rt
-rda   ap2#,   klap   
-wrap   ap2,   -klap     
-rda   ap2b#,   klap   
-wrap   ap2b,   -klap     
-wrax   temp,   1     
-rdfx   lpf2,   kfl
-wrlx   lpf2,   -1
-rdfx   hpf2,   kfh
-wrhx   hpf2,   -1
-rdax   temp,   -1
-mulx   pot0
-rdax   temp,   1
-wra   del2,   0     
+rda	dcl#,1				
+rdfx	fil_rl,klupl	
+wrax	fil_rl,1	
+mulx	kfl		
+rda	dcl#,1		
+wrax	temp2,1		
+rdfx	fil_rh,kluph	
+wrhx	fil_rh,-1			
+mulx	kfh		
+rdax	temp2,1		
 
-;aps into delay3:
+;Loop feedback is now in place, filtered. Now sum in input AP signal.
 
-rda   del2#,   1     
-mulx   rt
-rdax   iapout,   1     
-rda   ap3#,   klap   
-wrap   ap3,   -klap     
-rda   ap3b#,   klap   
-wrap   ap3b,   -klap     
-wrax   temp,   1     
-rdfx   lpf3,   kfl
-wrlx   lpf3,   -1
-rdfx   hpf3,   kfh
-wrhx   hpf3,   -1
-rdax   temp,   -1
-mulx   pot0
-rdax   temp,   1   
-wra   del3,   0
+mulx	krt
+rdax	temp1,1		;sum in input all pass filters
+rda	apcr1#,kap
+wrap	apcr1,-kap
+rda	apcr2#,kap
+wrap	apcr2,-kap
+wra	dcr,0		;write result to right loop delay
 
-;aps into delay4:
+;now grab outputs from each delay input:
 
-rda   del3#,   1.0     
-mulx   rt
-rda   ap4#,   klap   
-wrap   ap4,   -klap     
-rda   ap4b#,   klap   
-wrap   ap4b,   -klap     
-wrax   temp,   1     
-rdfx   lpf4,   kfl
-wrlx   lpf4,   -1
-rdfx   hpf4,   kfh
-wrhx   hpf4,   -1
-rdax   temp,   -1
-mulx   pot0
-rdax   temp,   1   
-wra   del4,   0     
-
-;take outputs as taps from reverb ring:
-rda   del1,      0.8
-rda   del2,      0.8
-rda   del3+2876,   1.5
-rda   del1+2093,   1.1         
-rda   del4+1234,   1.1
-wrax   revout,      1   ;Write to revout register, keep in ACC for pitch shifting
-
-
-;PITCH SHIFT +1 OCTAVE
-
-cho   rda,   RMP0,   REG|COMPC,   delayl
-cho   rda,   RMP0,   ,   delayl+1
-wra   temp1,   0
-cho   rda,   RMP0,   RPTR2|COMPC,   delayl
-cho   rda,   RMP0,   RPTR2,   delayl+1
-cho   sof,   RMP0,   NA|COMPC,   0
-cho   rda,   RMP0,   NA,   temp1
-
-;LPF to smooth out a little of the high end
-rdfx   LPF,   LPFF      ;Freq coef
-wrhx   LPF,   LPFSH      ;Shelving coef.
-
-wrax   pitchout,   1   ;Write the pitch + reverb out on pitchout and keep it in acc. ACC = Pitch + Reverb
-mulx   pot1         ;Multily by Feedback pot (POT2). ACC = (Pitch + Reverb) * POT2
-rdax   adcl,   1      ;Read ADCL and add to ACC. ACC = ((Pitch + Reverb) * POT2) + Clean
-wrax   revin,   0      ;Write the mix from the ACC (feedback and clean signal) on the revin and clear the ACC.
-
-;Making mono output
-rdax   revout,   1      ;Read output from Reverb (revout) and write it to ACC.
-wrax   dacl,1         ;Write the ACC on DACL and keep it.   
-wrax   dacr,0          ;Write the Acc on DACR and clear it.
-
-;set up lfo, 1Hz to 2Hz, +/-100 samples, for smearing loop all passes:
-
-skp   run,   2
-wlds   sin0,   30,   50
-wlds   sin1,   41,   50
-
-;smear 4 allpass filters in reverb ring:
-
-cho   rda,   sin0,   reg|compc,   ap1+50   ;sin0
-cho   rda,   sin0,   0,   ap1+51
-wra   ap1+100,   0
-
-cho   rda,   sin0,   cos|compc,   ap2+50   ;cos0
-cho   rda,   sin0,   cos,   ap2+51   
-wra   ap2+100,   0
-
-cho   rda,   sin1,   reg|compc,   ap3+50   ;sin1
-cho   rda,   sin1,   0,   ap3+51
-wra   ap3+100,   0
-
-cho   rda,   sin1,   cos|compc,   ap4+50   ;cos1
-cho   rda,   sin1,   cos,   ap4+51   
-wra   ap4+100,   0
+rda	dcl,1.99
+rda	dcl#,0.8
+rda	dcr#,0.9
+wrax	dacl,0
+rda	dcr,1.99
+rda	dcr#,0.8
+rda	dcl#,0.9
+wrax	dacr,0
+clr

@@ -22,3 +22,19 @@ WRAX	pot0Smooth, 0
 RDAX 	pot0Smooth, 1
 SOF	    0.96, 0.04 ;40ms to 1000ms
 WRAX 	ADDR_PTR, 0
+
+;Mix the dry input with the delay out
+RDAX    delayOut, 0.5
+MULX    POT1
+RDAX    ADCL, 0.5
+WRAX    dryInput, 1
+WRA     echo, 0
+
+;Delay output
+RMPA    1
+WRAX    delayOut, 0
+
+;Form output
+RDAX    delayOut, 1
+WRAX    DACL, 1
+WRAX    DACR, 0
