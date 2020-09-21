@@ -1,195 +1,223 @@
-;Stereo reverb with 3 variables:
-;pot0 = reverb time
-;pot1 = diffusion
-;pot2 = decay filtering
-;95 ticks
+;Room.
+;Pot0 = predelay 0-100ms.
+;Pot1 = reverb time
+;Pot2 = damping
 
-equ	krt	reg0	;reverb time
-equ	kdiff	reg1	;input AP diffusion coefficients
-equ	kfh	reg2	;high freq shelf
-equ	kfl	reg3	;low freq shelf
-equ	temp1	reg4	;temporary register
-equ	temp2	reg5
-equ	temp3	reg6
-equ	fil_ll	reg7
-equ	fil_lh	reg8
-equ	fil_rl	reg9
-equ	fil_rh	reg10
-equ	kin	reg11	;input scaling, function of Krt
+mem	pdel	3277	;100ms predelay space
+mem	idel	4000	;initial sound space
+mem	iap0	11
+mem	iap1	27
+mem	iap2	43
+mem	iap5	171
+mem	iap6	296	;thickening all passes imbeded in intiial delay
 
-equ	kap	0.6	;loop AP coefficients
-equ	kapi	0.65	;input AP coefficient
-equ	kluph	0.3	;loop high cut freq
-equ	klupl	0.03	;loop low cut freq
+mem	ap1	134
+mem	ap2	256
+mem	ap3	562
+mem	ap4	763	;reverb loop input all passes
 
-mem	apl1	420
-mem	apl2	867
-mem	apl3	1578
-mem	apl4	390
-
-mem	apr1	450
-mem	apr2	909
-mem	apr3	1630
-mem	apr4	576
-
-mem	apcl1	3402
-mem	apcl2	2202
-mem	dcl	7678
-
-mem	apcr1	3167
-mem	apcr2	2009
-mem	dcr	7353
-
-;prepare pots:
-
-rdax	pot0,1
-log	0.5,0
-exp	1,0		;square root of pot
-sof	0.7,0.2		;rt spans 0.2 to 0.9
-wrax	krt,-0.8
-sof	1,0.999
-wrax	kin,0		;input scaling coefficient
+mem	lap1a	1421
+mem	lap1b	1945
+mem	d1	2434
+mem	lap2a	1894
+mem	lap2b	1767
+mem	d2	2645	;loop constants
 
 
-rdax	pot1,0.7
-wrax	kdiff,0		;input AP Ks from 0 to 0.7
 
-sof	0,-0.5		;load -0.5
-rdax	pot2,1		;add pot2, ranges -0.5 to +0.5
-sof	1.9999,0	;ranges -1 to +1
-wrax	temp1,1
-skp	neg,1
-clr			;do not allow to go positive
-wrax	kfh,0		;store low shelf, -1 to 0 (at mid pos)
-rdax	temp1,1		;get pot back
-sof	-1,0		;change sign
-skp	neg,1
-clr
-wrax	kfl,0		;same with high shelf, 0 (at mid pos) to -1
+;write-first registers:
+equ	kirt	reg0	;coefficint to scale initial sound
+equ	krt	reg1	;coefficient to affect RT of loop
+equ	apout	reg2	;output of loop input all passes
+equ	kd	reg3	;damping coefficient (for shelving)
+equ	temp	reg4	;temp register for filter routines
+equ	gain	reg5	;adjust gain with RT
+equ tempr reg6
+equ templ reg7
 
-;now do reverb:
+;read-first registers:
+equ	lf1	reg20	;reverb loop filter 1
+equ	lf2	reg21	;reverb loop filter 2
+equ	hf1	reg22	;loop high pass 1 (fixed)
+equ	hf2	reg23	;loop high pass 2 (fixed)
+equ	lfin1	reg24	;LPF for imbedding in intial delay
+equ	lfin2	reg25	;LPF for imbedding in intial delay
+equ	lf	reg26	;input low pass (shelving with kd)
 
-;do 3 input all passes, controlled by the variable Kdiff
+;clear read-first registers:
+skp	run,endclr
+wrax	lf1,0
+wrax	lf2,0
+wrax	hf1,0
+wrax	hf2,0
+wrax	lfin1,0
+wrax	lfin2,0
+wrax	lf,0
+endclr:
 
-rdax	adcl,0.5	;read in left side, leave headroom
-mulx	kin
-wrax	temp3,0
+;initial sound tap positions (30.5uS/location, 100=3.05mS):
+equ	ld1	874	;first tap, left
+equ	rd1	874	;first tap, right
+equ	ld2	1156	;and so on...
+equ	rd2	962
+equ	ld3	1345
+equ	rd3	1121
+equ	ld4	1456
+equ	rd4	1423
+equ	ld5	2121
+equ	rd5	2124
+equ	ld6	3245
+equ	rd6	3646    
 
-rda	apl1#,1		;read first AP output
-mulx	kdiff		;mult by diffusion
-rdax	temp3,1		;read in left side, leave headroom
-wra	apl1,-1		;write result to AP delay, change sign
-mulx	kdiff		;mult by diffusion
-rda	apl1#,1		;read AP out again
-wrax	temp1,0		;save to temp and clear ACC
+;initialize sin LFO:
+skp	run,endset
+wlds	sin0,25,100
+endset:
 
-rda	apl2#,1		
-mulx	kdiff		
-rdax	temp1,1		
-wra	apl2,-1		
-mulx	kdiff		
-rda	apl2#,1		
-wrax	temp1,0		
+;prepare predelay pot:
+rdax	pot0,0.1		;to 1/10th total delay (100ms)
+and	%01111110_00000000_00000000
+wrax	addr_ptr,0		;write to memory pointer
 
-rda	apl3#,1		
-mulx	kdiff		
-rdax	temp1,1		
-wra	apl3,-1		
-mulx	kdiff		
-rda	apl3#,1		
+;prepare decay pot:
+rdax	pot1,0.97		;get pot, limit to less than infinite
+wrax	krt,1			;write loop decay time
+sof	0.4,0.6			;scale to 0.6 to 1.0
+wrax	kirt,0			;write impulse filter gains
+sof	-1,0.99			;scale to decrease gain with RT
+wrax	gain,0			;write gain factor
 
-rda	apl4#,kapi	;read fourth input AP, fixed coefficient
-wrap	apl4,-kapi	
-rdax	temp1,0		;save in temp reg
+;prepare damping pot:
+rdax	pot2,-1
+wrax	kd,0			;increases shelf to -1 (infinite loss)
 
-;input all passes are now done. Now we add in the loop signal and filter:
+;do inputs to predelay:
+rdax	adcl,0.5
+rdax	adcr,0.5		;get inputs
+mulx	gain			;give greater gain to short RT
+wra	pdel,0
 
-rda	dcr#,1		;read right delay output
-rdfx	fil_ll,klupl	;set up low pass filter for high pass operation
-wrax	fil_ll,1	;change sign on lpf output
-mulx	kfl		;scale by lower end of pot2 range
-rda	dcr#,1		;read back the delay output
-wrax	temp2,1		;save, continue in ACC
-rdfx	fil_lh,kluph	;do low pass for high end control
-wrhx	fil_lh,-1	;create infinite shelf high pass
-mulx	kfh		;scale by upper end of pot2 range
-rdax	temp2,1		;sum back temp value
+;read predelay and write initial response delay:
+rmpa	1
+rda	iap0#,0.5
+wrap	iap0,-0.5		;complicate input to initial delay
+wrax	temp,1
+rdfx	lf,0.4
+wrhx	lf,-1
+mulx	kd
+rdax	temp,1			;low pass fiter entire input
+wra	idel,0			;write initial sound delay
 
-;Loop feedback is now in place, filtered. 
-;scale by Krt, sum in input AP signal.
+;complicate initial sound:
+rda	idel+500,1
+rda	iap1#,0.5
+wrap	iap1,-0.5
+wra	idel+500,0
 
+rda	idel+1000,1
+rda	iap2#,0.5
+wrap	iap2,-0.5
+wrax	temp,1			;save filter input
+rdfx	lfin1,0.2
+wrhx	lfin1,-1		;make HP filter
+mulx	kd			;multiply by negative shelving coef
+rdax	temp,1			;add back input (shelving LPF)
+wra	idel+1000,0
+
+rda	idel+2500,1
+rda	iap5#,0.5
+wrap	iap5,-0.5
+wrax	temp,1			;save filter input
+rdfx	lfin2,0.2
+wrhx	lfin2,-1		;make HP filter
+mulx	kd			;multiply by negative shelving coef
+rdax	temp,1			;add back input (shelving LPF)
+wra	idel+2500,0
+
+rda	idel+3000,1
+rda	iap6#,0.5
+wrap	iap6,-0.5
+wra	idel+3000,0
+
+;do reverb input all passes:
+rda	idel,0.9		;leave some headroom
+rda	ap1#,0.5
+wrap	ap1,-0.5
+rda	ap2#,0.5
+wrap	ap2,-0.5
+rda	ap3#,0.5
+wrap	ap3,-0.5
+rda	ap4#,0.5
+wrap	ap4,-0.5
+wrax	apout,0
+
+;do reverb loop and sum all outputs:
+rda	d2#,1
 mulx	krt
-rdax	temp1,1		;sum in input all pass filters
-rda	apcl1#,kap
-wrap	apcl1,-kap	;do left loop all pass
-rda	apcl2#,kap
-wrap	apcl2,-kap	;do left loop all pass
-wra	dcl,0		;write result to left loop delay
+rdax	apout,1
+rda	lap1a#,0.5
+wrap	lap1a,-0.5
+rda	lap1b#,0.5
+wrap	lap1b,-0.5
+wrax	temp,1			;save filter input
+rdfx	lf1,0.4
+wrhx	lf1,-1			;make HP filter
+mulx	kd			;multiply by negative shelving coef
+rdax	temp,1			;add back input (shelving LPF)
+rdfx	hf1,0.01
+wrhx	hf1,-0.5		;roll out lows in loop
+wra	d1,1.99
 
-;now do the same to the right channel:
+rda	idel+ld6,-0.35
+mulx	kirt
+rda	idel+ld5,0.4
+mulx	kirt
+rda	idel+ld4,0.4
+mulx	kirt
+rda	idel+ld3,0.5
+mulx	kirt
+rda	idel+ld2,0.5
+rda	idel+ld1,-0.55
+wrax	templ,0
 
-rdax	adcr,0.5	;read in right side, leave headroom
-mulx	kin
-wrax	temp3,0
-
-rda	apr1#,1		
-mulx	kdiff		
-rdax	temp3,1	
-wra	apr1,-1		
-mulx	kdiff		
-rda	apr1#,1		
-wrax	temp1,0		
-
-rda	apr2#,1		
-mulx	kdiff		
-rdax	temp1,1		
-wra	apr2,-1		
-mulx	kdiff		
-rda	apr2#,1		
-wrax	temp1,0		
-
-rda	apr3#,1		
-mulx	kdiff		
-rdax	temp1,1		
-wra	apr3,-1		
-mulx	kdiff		
-rda	apr3#,1		
-
-rda	apr4#,kapi	;read fourth input AP, fixed coefficient
-wrap	apr4,-kapi	
-rdax	temp1,0		;save in temp reg
-
-;input all passes are now done. Now we add in the loop signal and filter:
-
-rda	dcl#,1				
-rdfx	fil_rl,klupl	
-wrax	fil_rl,1	
-mulx	kfl		
-rda	dcl#,1		
-wrax	temp2,1		
-rdfx	fil_rh,kluph	
-wrhx	fil_rh,-1			
-mulx	kfh		
-rdax	temp2,1		
-
-;Loop feedback is now in place, filtered. Now sum in input AP signal.
-
+rda	d1#,1
 mulx	krt
-rdax	temp1,1		;sum in input all pass filters
-rda	apcr1#,kap
-wrap	apcr1,-kap
-rda	apcr2#,kap
-wrap	apcr2,-kap
-wra	dcr,0		;write result to right loop delay
+rdax	apout,1
+rda	lap2a#,0.5
+wrap	lap2a,-0.5
+rda	lap2b#,0.5
+wrap	lap2b,-0.5
+wrax	temp,1
+rdfx	lf2,0.4
+wrhx	lf2,-1
+mulx	kd
+rdax	temp,1
+rdfx	hf2,0.01
+wrhx	hf2,-0.5
+wra	d2,1.99
 
-;now grab outputs from each delay input:
+rda	idel+rd6,0.4
+mulx	kirt
+rda	idel+rd5,-0.5
+mulx	kirt
+rda	idel+rd4,0.5
+mulx	kirt
+rda	idel+rd3,0.6
+mulx	kirt
+rda	idel+rd2,-0.6
+rda	idel+rd1,0.5
+wrax	tempr,0
 
-rda	dcl,1.99
-rda	dcl#,0.8
-rda	dcr#,0.9
-wrax	dacl,0
-rda	dcr,1.99
-rda	dcr#,0.8
-rda	dcl#,0.9
-wrax	dacr,0
-clr
+;do reverb smoothing:
+
+;cho	rda,sin0,sin|reg|compc,d1+100
+;cho	rda,sin0,sin,d1+101
+;wra	d1+200,0
+;
+;cho	rda,sin0,cos|reg|compc,d2+100
+;cho	rda,sin0,cos,d2+101
+;wra	d2+200,0
+
+rdax tempr, 0.5
+rdax templ, 0.5
+wrax dacl, 0
