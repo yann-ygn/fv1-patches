@@ -32,6 +32,8 @@ equ	apout	reg2	;output of loop input all passes
 equ	kd	reg3	;damping coefficient (for shelving)
 equ	temp	reg4	;temp register for filter routines
 equ	gain	reg5	;adjust gain with RT
+equ templ reg6
+equ tempr reg7
 
 ;read-first registers:
 equ	lf1	reg20	;reverb loop filter 1
@@ -176,7 +178,7 @@ rda	idel+ld3,0.5
 mulx	kirt
 rda	idel+ld2,0.5
 rda	idel+ld1,-0.55
-wrax	dacl,0
+wrax	templ,0
 
 rda	d1#,1
 mulx	krt
@@ -204,14 +206,10 @@ rda	idel+rd3,0.6
 mulx	kirt
 rda	idel+rd2,-0.6
 rda	idel+rd1,0.5
-wrax	dacl,0
+wrax	tempr,0
 
-;do reverb smoothing:
 
-cho	rda,sin0,sin|reg|compc,d1+100
-cho	rda,sin0,sin,d1+101
-wra	d1+200,0
+rdax templ, 0.5
+rdax tempr, 0.5
+wrax dacl, 0
 
-cho	rda,sin0,cos|reg|compc,d2+100
-cho	rda,sin0,cos,d2+101
-wra	d2+200,0
