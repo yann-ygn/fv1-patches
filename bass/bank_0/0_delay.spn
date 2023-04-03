@@ -1,0 +1,74 @@
+; Simple Delay Effect with HPF for Bass Guitar
+
+; Controls :
+; POT0 : Delay time
+; POT1 : Feedback
+; POT2 : HPF
+
+; Constants
+EQU     length        32767    ; Maximum delay memory size
+EQU     smooth        0.000125 ; Smoothing factor for potentiometers
+
+; Memory
+MEM     delayMem      length
+
+; Registers
+EQU     pot0Smooth    REG0
+EQU     pot1Smooth    REG1
+EQU     pot2Smooth    REG2
+EQU     delayOut      REG3
+EQU     feedback      REG4
+EQU     hpfFilter     REG5
+EQU     hpfOut        REG6
+
+; POT0 smoothing (Delay Time)
+RDAX    POT0, 1
+RDFX    pot0Smooth, smooth
+WRAX    pot0Smooth, 0
+
+; POT1 smoothing (Feedback)
+RDAX    POT1, 1
+RDFX    pot1Smooth, smooth
+WRAX    pot1Smooth, 0
+
+; POT2 smoothing (HPF frequency)
+RDAX    POT2, 1
+RDFX    pot2Smooth, smooth
+WRAX    pot2Smooth, 0
+
+; Scale and invert POT2 for HPF frequency control
+RDAX    pot2Smooth, 1
+SOF     0.5, 0.5
+SOF     -1, 0.999
+WRAX    hpfFilter, 0
+
+; POT0 delay scaling
+RDAX    pot0Smooth, 1
+SOF     0.9, 0.1
+WRAX    ADDR_PTR, 0
+
+; Read delay output
+RMPA    1
+WRAX    delayOut, 0
+
+; Apply feedback
+RDAX    pot1Smooth, 1
+MULX    delayOut
+WRAX    feedback, 0
+
+; Input (Left channel only)
+RDAX    ADCL, 1
+
+; Add feedback
+RDAX    feedback, 1
+
+; Apply HPF
+RDFX    hpfOut, hpfFilter
+WRAX    hpfOut, 0
+
+; Write delay input
+WRAX    delayMem, 0
+
+; Write 100% wet output (Left channel only)
+RDAX    hpfOut, 1
+WRAX    DACL, 1
